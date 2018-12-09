@@ -1,0 +1,33 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.11.0
+        environment:
+          - GO111MODULE: "on"
+    working_directory: /go/src/github.com/wtks/bme280
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+            - gomod-{{ checksum "go.mod" }}
+      - run:
+          name: go mod download
+          when: always
+          command: go mod download
+      - save_cache:
+          key: gomod-{{ checksum "go.mod" }}
+          when: always
+          paths:
+            - /go/pkg/mod/cache
+
+      - run:
+          name: build
+          when: always
+          command: make build
+
+      - store_artifacts:
+          path: /go/src/github.com/wtks/bme280/bme280
+          destination: bme280
