@@ -15,6 +15,9 @@ import (
 const (
 	ClientID        = "rpizerow_bme280"
 	PubTopicMetrics = "/home/metrics"
+	PubTopicTemp    = "/home/temperature"
+	PubTopicHumid   = "/home/humidity"
+	PubTopicPress   = "/home/pressure"
 )
 
 var (
@@ -79,6 +82,9 @@ func main() {
 				}
 				pressure /= 100
 				publish(client, PubTopicMetrics, fmt.Sprintf(`{"t":%2.2f,"h":%0.2f,"p":%f}`, temp, humid, pressure))
+				publish(client, PubTopicTemp, fmt.Sprintf(`%2.2f`, temp))
+				publish(client, PubTopicHumid, fmt.Sprintf(`%0.2f`, humid))
+				publish(client, PubTopicPress, fmt.Sprintf(`%f`, pressure))
 			}
 		}
 	}()
